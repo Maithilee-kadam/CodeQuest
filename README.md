@@ -18,8 +18,7 @@ A gamified quiz platform that helps programming students practise through points
 
 ## How to run
 
-1. Unzip the project.
-2. Double-click `index.html` to open it in any modern browser.
+1. Double-click `index.html` to open it in any modern browser.
 
 No installation, build step or internet connection is needed. If you are offline, the page uses your system fonts instead of the Google Fonts it normally loads.
 
