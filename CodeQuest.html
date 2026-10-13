@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CodeQuest</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#F5F2FF;--card:#FFFFFF;--ink:#1E1646;--mute:#6B648F;--line:#DDD6F7;--pri:#6C47FF;--onpri:#FFFFFF;--xp:#FFB400;--ok:#0E9F8E;--okbg:#D9F5F0;--bad:#E5484D;--badbg:#FDE3E4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150F33;--card:#211848;--ink:#EEEAFF;--mute:#A59ECC;--line:#3A2F70;--pri:#8D70FF;--okbg:#10382F;--badbg:#45202A;--ok:#38D3BF;--bad:#FF7A7E}}
+:root[data-theme="dark"]{--bg:#150F33;--card:#211848;--ink:#EEEAFF;--mute:#A59ECC;--line:#3A2F70;--pri:#8D70FF;--okbg:#10382F;--badbg:#45202A;--ok:#38D3BF;--bad:#FF7A7E}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sora",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+code{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.92em}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.chips{display:flex;gap:8px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:700}
+nav{display:flex;gap:6px;margin-bottom:16px}
+nav button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--mute);font:inherit;font-weight:700;cursor:pointer}
+nav button.on{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+section{display:none}section.on{display:block}
+h1{font-size:1.6rem;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:1.2rem;line-height:1.4;margin:14px 0}
+.sub{color:var(--mute);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.lvl{display:flex;align-items:center;gap:16px}
+.ring{position:relative;width:104px;height:104px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.6rem;line-height:1}
+.ring b small{font-size:.7rem;color:var(--mute);font-weight:500;margin-top:2px}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.topic{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.topic:hover,.topic:focus-visible{border-color:var(--pri)}
+.topic .ic{font-size:1.6rem}.topic span{display:block;color:var(--mute);font-size:.82rem}
+.topic strong{display:block}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:.85rem;font-weight:700}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--xp);border-radius:99px;transition:width .4s}
+.opts{display:grid;gap:10px}
+.opt{padding:14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.fb{min-height:1.5em;margin:12px 0;font-weight:700}
+.fb.ok{color:var(--ok)}.fb.no{color:var(--bad)}
+.btn{display:inline-block;padding:12px 20px;border-radius:12px;border:0;background:var(--pri);color:var(--onpri);font:inherit;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn[hidden]{display:none}
+.guest header,.guest nav{display:none}
+.lbl{display:block;font-weight:700;font-size:.85rem;margin:14px 0 6px}
+.inp{width:100%;padding:12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.inp:focus{outline:3px solid var(--pri);outline-offset:1px}
+.hearts{letter-spacing:2px}
+.tbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.tbar i{display:block;height:100%;width:100%;background:var(--ok)}
+.tbar.low i{background:var(--bad)}
+.pills{display:flex;gap:8px}
+.pill{flex:1;padding:10px 6px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;text-align:center}
+.pill small{display:block;color:var(--mute);font-weight:500;font-size:.7rem}
+.pill.on{border-color:var(--pri);background:var(--pri);color:var(--onpri)}
+.pill.on small{color:var(--onpri)}
+.pill:disabled{opacity:.5;cursor:not-allowed}
+.rev{border-left:4px solid var(--bad);padding:6px 12px;margin:8px 0;background:var(--card);border-radius:0 10px 10px 0}
+.rev small{display:block;color:var(--mute)}
+.big{font-size:3rem;font-weight:800;line-height:1;margin:6px 0}
+.gain{color:var(--xp);font-weight:800;font-size:1.4rem}
+.up{background:var(--xp);color:#3A2800;border-radius:12px;padding:10px 14px;font-weight:800;margin:12px 0}
+.bg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.badge{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;background:var(--card)}
+.badge .e{font-size:1.8rem}.badge small{display:block;color:var(--mute);font-size:.75rem}
+.badge.lock{opacity:.4;filter:grayscale(1)}
+.badge.new{animation:pop .6s ease-out;border-color:var(--xp)}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:1.5rem}.stat span{color:var(--mute);font-size:.82rem}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}.row .rk{width:24px;font-weight:800;color:var(--mute)}.row .nm{flex:1}
+.row.me{background:var(--okbg);border-radius:10px;padding:10px;font-weight:800}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tools button{font:inherit;font-size:.8rem;padding:6px 10px;border-radius:8px;border:1px dashed var(--line);background:transparent;color:var(--mute);cursor:pointer}
+button:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">CodeQuest</div>
+    <div class="chips"><span class="chip" id="cXp"></span><span class="chip" id="cSt"></span></div>
+  </header>
+  <nav>
+    <button id="nHome" class="on" onclick="show('home')">Learn</button>
+    <button id="nBoard" onclick="show('board')">Dashboard</button>
+  </nav>
+
+  <section id="login"></section>
+  <section id="home"></section>
+  <section id="quiz"></section>
+  <section id="result"></section>
+  <section id="board"></section>
+</div>
+
+<script>
+// ---------- Questions (5 per topic) ----------
+const Q = {
+  Python: [
+    {q:'What does <code>len("quest")</code> return?', o:['4','5','6','Error'], a:1, e:'The word has 5 characters.'},
+    {q:'Which one creates a list?', o:['<code>[1, 2]</code>','<code>(1, 2)</code>','<code>{1, 2}</code>','<code>&lt;1, 2&gt;</code>'], a:0, e:'Square brackets make a list.'},
+    {q:'What is printed by <code>print(2 ** 3)</code>?', o:['6','8','9','23'], a:1, e:'** is the power operator, so 2 cubed is 8.'},
+    {q:'Which keyword defines a function?', o:['func','function','def','lambda'], a:2, e:'<code>def</code> starts a function definition.'},
+    {q:'What does <code>"abc".upper()</code> return?', o:['abc','ABC','Abc','Error'], a:1, e:'upper() converts all letters to capitals.'}
+  ],
+  C: [
+    {q:'Which header file is needed for <code>printf</code>?', o:['stdlib.h','string.h','stdio.h','math.h'], a:2, e:'printf lives in stdio.h.'},
+    {q:'How many bytes is an <code>int</code> on most systems?', o:['1','2','4','8'], a:2, e:'Usually 4 bytes (32 bits).'},
+    {q:'What is <code>5 / 2</code> when both are ints?', o:['2.5','2','3','2.0'], a:1, e:'Integer division drops the decimal part.'},
+    {q:'Array indexing in C starts at?', o:['0','1','-1','Any number'], a:0, e:'The first element is at index 0.'},
+    {q:'Which operator gives the address of a variable?', o:['*','&','#','@'], a:1, e:'&amp; is the address-of operator.'}
+  ],
+  DSA: [
+    {q:'Which data structure follows LIFO?', o:['Queue','Stack','Array','Graph'], a:1, e:'Last in, first out is how a stack works.'},
+    {q:'Time complexity of binary search?', o:['O(n)','O(log n)','O(n²)','O(1)'], a:1, e:'It halves the search range each step.'},
+    {q:'Which structure follows FIFO?', o:['Stack','Tree','Queue','Heap'], a:2, e:'First in, first out is a queue.'},
+    {q:'Worst-case time of bubble sort?', o:['O(n)','O(log n)','O(n log n)','O(n²)'], a:3, e:'Nested passes over the data give n squared.'},
+    {q:'Which structure does BFS use?', o:['Stack','Queue','Heap','Set'], a:1, e:'BFS visits level by level using a queue.'}
+  ],
+  Java: [
+    {q:'Which keyword creates a new object?', o:['new','create','make','object'], a:0, e:'<code>new</code> allocates an object.'},
+    {q:'Which method starts a Java program?', o:['start()','main()','run()','init()'], a:1, e:'The JVM looks for <code>main()</code>.'},
+    {q:'Which of these is NOT a primitive type?', o:['int','boolean','String','char'], a:2, e:'String is a class, not a primitive.'},
+    {q:'Which keyword is used for inheritance?', o:['extends','inherits','import','static'], a:0, e:'A class uses <code>extends</code> to inherit.'},
+    {q:'Java source code is compiled into?', o:['Machine code','Bytecode','Assembly','Python'], a:1, e:'The JVM runs the compiled bytecode.'}
+  ],
+  Web: [
+    {q:'Which tag creates a link?', o:['&lt;link&gt;','&lt;a&gt;','&lt;href&gt;','&lt;url&gt;'], a:1, e:'The anchor tag <code>&lt;a&gt;</code> makes links.'},
+    {q:'Which CSS property sets text color?', o:['color','font-color','text-color','fg'], a:0, e:'<code>color</code> sets the text color.'},
+    {q:'Which is the largest heading tag?', o:['&lt;h6&gt;','&lt;h1&gt;','&lt;h3&gt;','&lt;head&gt;'], a:1, e:'h1 is the top-level heading.'},
+    {q:'How do you print to the browser console in JavaScript?', o:['console.log()','print()','echo','log.console'], a:0, e:'<code>console.log()</code> writes to the console.'},
+    {q:'Which CSS line turns on a flex layout?', o:['display: flex','layout: flex','flex: on','box: flex'], a:0, e:'<code>display: flex</code> enables flexbox.'}
+  ],
+  SQL: [
+    {q:'Which command reads data from a table?', o:['SELECT','GET','READ','FETCH'], a:0, e:'SELECT retrieves rows.'},
+    {q:'Which clause filters rows?', o:['FILTER','WHERE','ONLY','IF'], a:1, e:'WHERE keeps only matching rows.'},
+    {q:'Which command removes a whole table?', o:['REMOVE','CLEAR','DROP','ERASE'], a:2, e:'DROP TABLE deletes the table. DELETE removes rows.'},
+    {q:'What uniquely identifies each row?', o:['Primary key','Foreign key','View','Index'], a:0, e:'A primary key is unique for every row.'},
+    {q:'Which clause sorts the results?', o:['SORT BY','ORDER BY','GROUP BY','ARRANGE'], a:1, e:'ORDER BY sorts ascending or descending.'}
+  ],
+  'AI/ML': [
+    {q:'Which is a supervised learning task?', o:['Predicting prices from labeled data','Grouping unlabeled customers','Learning by trial and reward','Compressing images'], a:0, e:'Supervised learning trains on labeled examples.'},
+    {q:'What is overfitting?', o:['Model is too simple','Model memorizes training data','Model trains too fast','Model has no data'], a:1, e:'It performs well on training data but poorly on new data.'},
+    {q:'Which library is used for deep learning?', o:['NumPy','TensorFlow','Matplotlib','Flask'], a:1, e:'TensorFlow builds neural networks.'},
+    {q:'Which is a classification algorithm?', o:['Linear regression','K-means','Logistic regression','PCA'], a:2, e:'Logistic regression predicts classes.'},
+    {q:'The input columns used to make a prediction are called?', o:['Features','Epochs','Weights','Loss'], a:0, e:'Features are the model inputs.'}
+  ]
+};
+const ICONS = {Python:'🐍', C:'⚙️', DSA:'🌳', Java:'☕', Web:'🌐', SQL:'🗄️', 'AI/ML':'🤖'};
+const INFO = {Python:'Basics and syntax', C:'Memory and operators', DSA:'Structures and complexity', Java:'OOP and syntax', Web:'HTML, CSS and JavaScript', SQL:'Queries and keys', 'AI/ML':'Models and concepts'};
+const BADGES = [
+  {id:'first', n:'First win', d:'Finish a quiz', i:'🚀'},
+  {id:'perfect', n:'Perfect 5', d:'Score 5 out of 5', i:'🎯'},
+  {id:'run', n:'Hot run', d:'4 right in a row', i:'🔥'},
+  {id:'lv2', n:'Level 2', d:'Reach 100 XP', i:'⭐'},
+  {id:'streak', n:'3-day streak', d:'Play 3 days running', i:'📅'}
+];
+const RIVALS = [{n:'Aarav', xp:340},{n:'Sneha', xp:260},{n:'Rohan', xp:180},{n:'Priya', xp:90}];
+BADGES.push({id:'speed', n:'Speed demon', d:'3 fast answers in a quiz', i:'⚡'}, {id:'hard', n:'Brave', d:'Score 4+ on Hard', i:'🦁'});
+// Difficulty: seconds per question, XP multiplier, level needed to unlock
+const DIFF = {Easy:{sec:20, mult:1, need:1, tip:'20 sec'}, Medium:{sec:12, mult:1.5, need:1, tip:'12 sec, 1.5x XP'}, Hard:{sec:8, mult:2, need:3, tip:'8 sec, 2x XP'}};
+let D = 'Easy', timer = null;
+
+// ---------- Saved progress (browser storage, wrapped in try/catch) ----------
+let S = {xp:0, streak:0, last:'', badges:[], played:0, name:''};
+try { const r = localStorage.getItem('codequest'); if (r) S = Object.assign(S, JSON.parse(r)); } catch (e) {}
+function save() { try { localStorage.setItem('codequest', JSON.stringify(S)); } catch (e) {} }
+const lvl = x => Math.floor(x / 100) + 1;
+function day(offset) { const t = new Date(); t.setDate(t.getDate() + offset); return t.toDateString(); }
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// ---------- Screens ----------
+function show(id) {
+  if (id !== 'quiz') stopTimer();
+  ['login','home','quiz','result','board'].forEach(s => $('#' + s).classList.toggle('on', s === id));
+  document.body.classList.toggle('guest', id === 'login');
+  $('#nHome').classList.toggle('on', id !== 'board');
+  $('#nBoard').classList.toggle('on', id === 'board');
+  if (id === 'login') renderLogin();
+  if (id === 'home') renderHome();
+  if (id === 'board') renderBoard();
+  header();
+  window.scrollTo(0, 0);
+}
+function header() {
+  $('#cXp').textContent = '⚡ ' + S.xp + ' XP';
+  $('#cSt').textContent = '🔥 ' + S.streak + ' day' + (S.streak === 1 ? '' : 's');
+}
+
+function renderHome() {
+  const into = S.xp % 100, C = 2 * Math.PI * 44;
+  $('#home').innerHTML =
+    '<h1>Hi ' + esc(S.name) + ', let\'s play</h1><p class="sub">Answer questions, earn XP and unlock badges.</p>' +
+    '<div class="card lvl"><div class="ring"><svg width="104" height="104" viewBox="0 0 104 104">' +
+    '<circle cx="52" cy="52" r="44" fill="none" stroke="var(--line)" stroke-width="10"/>' +
+    '<circle cx="52" cy="52" r="44" fill="none" stroke="var(--xp)" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - into / 100)).toFixed(1) + '"/></svg>' +
+    '<b>' + lvl(S.xp) + '<small>Level</small></b></div>' +
+    '<div><strong>' + (100 - into) + ' XP to level ' + (lvl(S.xp) + 1) + '</strong><div class="sub" style="margin:4px 0 0">Each correct answer gives 20 XP. A perfect score adds a 20 XP bonus.</div></div></div>' +
+    '<h2>Choose difficulty</h2><div class="pills">' + Object.keys(DIFF).map(k => '<button class="pill' + (D === k ? ' on' : '') + '"' + (lvl(S.xp) < DIFF[k].need ? ' disabled' : '') + ' onclick="setD(\'' + k + '\')">' + k + '<small>' + (lvl(S.xp) < DIFF[k].need ? '🔒 Level ' + DIFF[k].need : DIFF[k].tip) + '</small></button>').join('') + '</div>' +
+    '<div class="sub" style="margin:8px 0 0">You get 3 lives per quiz. Harder levels earn more XP.</div>' +
+    '<h2>Pick a topic</h2><div class="topics">' +
+    Object.keys(Q).map(t => '<button class="topic" onclick="start(\'' + t + '\')"><span class="ic">' + ICONS[t] + '</span><div><strong>' + t + '</strong><span>' + INFO[t] + ' · 5 questions</span></div></button>').join('') +
+    '</div>';
+}
+
+// ---------- Quiz ----------
+let Z = null;
+function setD(k) { D = k; renderHome(); }
+function start(t) { Z = {t:t, d:D, i:0, ok:0, run:0, best:0, lives:3, fast:0, left:1, missed:[], lock:false, out:false}; show('quiz'); ask(); }
+function hearts() { return '❤️'.repeat(Z.lives) + '🖤'.repeat(3 - Z.lives); }
+function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
+// Countdown bar for each question; time up counts as a wrong answer
+function runTimer() {
+  const total = DIFF[Z.d].sec * 1000, t0 = Date.now();
+  stopTimer();
+  timer = setInterval(function () {
+    const bar = $('#tm');
+    if (!bar) { stopTimer(); return; }
+    const left = total - (Date.now() - t0);
+    Z.left = left / total;
+    bar.firstChild.style.width = Math.max(0, Z.left * 100) + '%';
+    bar.classList.toggle('low', Z.left < 0.3);
+    if (left <= 0) { stopTimer(); pick(-1); }
+  }, 100);
+}
+function ask() {
+  const q = Q[Z.t][Z.i];
+  Z.lock = false; Z.left = 1;
+  $('#quiz').innerHTML =
+    '<div class="meta"><span>' + Z.t + ' · ' + Z.d + '</span><span class="hearts">' + hearts() + '</span><span>Q ' + (Z.i + 1) + ' of 5</span></div>' +
+    '<div class="bar"><i style="width:' + (Z.i * 20) + '%"></i></div><div class="tbar" id="tm"><i></i></div><h2>' + q.q + '</h2>' +
+    '<div class="opts">' + q.o.map((o, k) => '<button class="opt" onclick="pick(' + k + ')">' + o + '</button>').join('') + '</div>' +
+    '<p id="fb" class="fb" aria-live="polite"></p><button id="nx" class="btn" hidden onclick="next()"></button>';
+  runTimer();
+}
+function pick(k) {
+  if (Z.lock) return;
+  Z.lock = true; stopTimer();
+  const q = Q[Z.t][Z.i], bs = document.querySelectorAll('.opt'), fb = $('#fb');
+  bs.forEach(b => b.disabled = true);
+  bs[q.a].classList.add('right');
+  if (k === q.a) {
+    Z.ok++; Z.run++; Z.best = Math.max(Z.best, Z.run); if (Z.left > 0.5) Z.fast++;
+    fb.className = 'fb ok'; fb.innerHTML = 'Correct!' + (Z.left > 0.5 ? ' Fast answer bonus. ' : ' ') + q.e;
+  } else {
+    Z.run = 0; Z.lives--; $('.hearts').innerHTML = hearts(); if (k >= 0) bs[k].classList.add('wrong'); Z.missed.push({q:q.q, a:q.o[q.a], e:q.e});
+    fb.className = 'fb no'; fb.innerHTML = (k < 0 ? 'Time is up. ' : 'Not quite. ') + q.e;
+  }
+  $('#nx').hidden = false;
+  Z.out = Z.lives <= 0;
+  $('#nx').textContent = (Z.i === 4 || Z.out) ? 'See result' : 'Next question';
+}
+function next() { if (Z.i === 4 || Z.out) finish(); else { Z.i++; ask(); } }
+
+function finish() {
+  const before = lvl(S.xp), gain = Math.round((Z.ok * 20 + Z.fast * 5 + (Z.ok === 5 ? 20 : 0)) * DIFF[Z.d].mult), got = [];
+  S.xp += gain; S.played++;
+  if (S.last !== day(0)) { S.streak = (S.last === day(-1)) ? S.streak + 1 : 1; S.last = day(0); }
+  const add = id => { if (!S.badges.includes(id)) { S.badges.push(id); got.push(id); } };
+  add('first');
+  if (Z.ok === 5) add('perfect');
+  if (Z.best >= 4) add('run');
+  if (S.xp >= 100) add('lv2');
+  if (S.streak >= 3) add('streak');
+  if (Z.fast >= 3) add('speed');
+  if (Z.d === 'Hard' && Z.ok >= 4) add('hard');
+  save();
+  const msg = Z.out ? 'Out of lives. Try again!' : Z.ok === 5 ? 'Perfect run!' : Z.ok >= 3 ? 'Nice work!' : 'Good try. Practice makes progress.';
+  $('#result').innerHTML =
+    '<div class="card" style="text-align:center"><div class="sub" style="margin:0">' + Z.t + ' · ' + Z.d + ' quiz complete</div>' +
+    '<div class="big">' + Z.ok + ' / 5</div><div>' + msg + '</div><div class="gain">+' + gain + ' XP</div>' +
+    (lvl(S.xp) > before ? '<div class="up">Level up! You are now level ' + lvl(S.xp) + '</div>' : '') + '</div>' +
+    (got.length ? '<h2>Badges unlocked</h2><div class="bg">' + got.map(id => badge(id, 'new')).join('') + '</div>' : '') +
+    (Z.missed.length ? '<h2>Review your mistakes</h2>' + Z.missed.map(m => '<div class="rev"><strong>' + m.q + '</strong><small>Answer: ' + m.a + '. ' + m.e + '</small></div>').join('') : '') +
+    '<div class="tools" style="margin-top:16px"><button class="btn" style="font-size:1rem;padding:12px 20px;border:0;color:var(--onpri);background:var(--pri)" onclick="show(\'home\')">Play another</button>' +
+    '<button class="btn ghost" style="font-size:1rem;padding:12px 20px" onclick="show(\'board\')">Dashboard</button></div>';
+  show('result');
+}
+
+// ---------- Dashboard ----------
+function badge(id, cls) {
+  const b = BADGES.find(x => x.id === id);
+  return '<div class="badge ' + cls + '"><div class="e">' + b.i + '</div><strong>' + b.n + '</strong><small>' + b.d + '</small></div>';
+}
+function renderBoard() {
+  const all = RIVALS.concat([{n:(S.name || 'You'), xp:S.xp, me:true}]).sort((a, b) => b.xp - a.xp);
+  $('#board').innerHTML =
+    '<h1>Your dashboard</h1><p class="sub">Track progress, badges and rank.</p>' +
+    '<div class="stats"><div class="stat"><b>' + S.xp + '</b><span>Total XP</span></div><div class="stat"><b>' + lvl(S.xp) + '</b><span>Level</span></div>' +
+    '<div class="stat"><b>' + S.streak + '</b><span>Day streak</span></div><div class="stat"><b>' + S.played + '</b><span>Quizzes played</span></div></div>' +
+    '<h2>Badges (' + S.badges.length + ' of ' + BADGES.length + ')</h2><div class="bg">' +
+    BADGES.map(b => badge(b.id, S.badges.includes(b.id) ? '' : 'lock')).join('') + '</div>' +
+    '<h2>Leaderboard</h2><div class="card">' +
+    all.map((p, i) => '<div class="row' + (p.me ? ' me' : '') + '"><span class="rk">' + (i + 1) + '</span><span class="nm">' + esc(p.n) + '</span><span>' + p.xp + ' XP</span></div>').join('') + '</div>' +
+    '<div class="tools"><button onclick="newDay()">Demo tool: pretend it is a new day</button><button onclick="logout()">Log out</button><button onclick="addXp()">Demo tool: add 100 XP</button><button onclick="resetAll()">Reset progress</button></div>';
+}
+function addXp() { S.xp += 100; save(); show('board'); }
+function newDay() { S.last = day(-1); save(); alert('Done. Your next finished quiz will count as a new day.'); }
+function resetAll() { S = {xp:0, streak:0, last:'', badges:[], played:0, name:S.name}; D = 'Easy'; save(); show('board'); }
+
+// ---------- Login (demo: name only, saved in this browser) ----------
+function renderLogin() {
+  $('#login').innerHTML =
+    '<div class="card" style="margin-top:8vh"><div class="logo" style="font-size:1.8rem">CodeQuest</div>' +
+    '<p class="sub">Learn to code by playing. Sign in to save your name and progress on this device.</p>' +
+    '<label class="lbl" for="lgName">Your name</label>' +
+    '<input id="lgName" class="inp" maxlength="20" autocomplete="name" placeholder="e.g. Maithilee" value="' + esc(S.name) + '" onkeydown="if(event.key===\'Enter\')login()">' +
+    '<p id="lgErr" class="fb no" aria-live="polite"></p>' +
+    '<button class="btn" style="width:100%" onclick="login()">Start playing</button>' +
+    '<button class="btn ghost" style="width:100%;margin-top:10px" onclick="guest()">Continue as guest</button>' +
+    '<p class="sub" style="margin:12px 0 0;font-size:.8rem">Demo sign-in: no password and no server. Your details stay in this browser.</p></div>';
+}
+function login() {
+  const n = $('#lgName').value.trim();
+  if (!n) { $('#lgErr').textContent = 'Please enter your name.'; return; }
+  S.name = n; save(); show('home');
+}
+function guest() { S.name = 'Guest'; save(); show('home'); }
+function logout() { S.name = ''; save(); show('login'); }
+
+S.name ? show('home') : show('login');
+</script>
+</body>
+</html>
